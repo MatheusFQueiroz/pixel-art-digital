@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel Art por Números</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:"Trebuchet MS",Verdana,sans-serif;color:#2A3081;background:#F4F5FB;
+     display:flex;flex-direction:column}
+header{background:#2A3081;color:#fff;padding:10px 18px;display:flex;align-items:center;
+       gap:14px;flex-wrap:wrap;flex-shrink:0}
+header h1{font-size:20px;white-space:nowrap}
+.chip{font-size:19px;font-weight:bold;border-radius:10px;padding:7px 16px;white-space:nowrap}
+#nomeC{background:#fff;color:#2A3081}
+#faltaC{background:#FFD900;color:#2A3081;margin-left:auto}
+#barra{background:#fff;border-bottom:3px solid #E3E5F2;padding:10px 18px;display:flex;
+       align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0}
+.cor{width:58px;height:58px;border-radius:12px;border:5px solid #fff;cursor:pointer;
+     display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:bold;
+     color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.35)}
+.cor.sel{border-color:#2A3081;transform:scale(1.08)}
+#barra button{font:inherit;font-size:16px;font-weight:bold;padding:9px 16px;border:none;
+              border-radius:10px;background:#4048A8;color:#fff;cursor:pointer;margin-left:auto}
+#palco{position:relative;flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
+#grade{display:grid;gap:2px;background:#C2C7E0;padding:2px;border-radius:6px}
+.cel{background:#fff;display:flex;align-items:center;justify-content:center;
+     font-size:15px;color:#9AA0C4;cursor:pointer;user-select:none}
+.cel.feito{color:transparent}
+.cel.vazio{background:#F7F7FB;cursor:default;color:transparent}
+#festa{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+       flex-direction:column;gap:18px;background:rgba(255,255,255,.97);text-align:center}
+#festa .tit{font-size:46px;font-weight:bold}
+#festa .sub{font-size:22px;color:#666}
+#festa button{font:inherit;font-size:22px;font-weight:bold;padding:14px 28px;border:none;
+              border-radius:10px;background:#2F9E44;color:#fff;cursor:pointer}
+#aviso{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:#2A3081;
+       color:#fff;font-size:18px;padding:10px 20px;border-radius:12px;display:none}
+</style></head><body>
+<header><h1>PIXEL ART POR NÚMEROS</h1>
+<div class="chip" id="nomeC">—</div><div class="chip" id="faltaC">—</div></header>
+<div id="barra"><span id="paleta"></span>
+<button id="btProx">PRÓXIMO DESENHO &#8594;</button></div>
+<div id="palco"><div id="grade"></div><div id="aviso"></div><div id="festa"></div></div>
+<script>
+(function(){
+var P={"CORACAO": ["000000000000", "002200220000", "022220222000", "022222222200", "022222222200", "002222222000", "000222220000", "000022200000", "000002000000", "000000000000", "000000000000", "000000000000"], "CASA": ["000004000000", "000044400000", "000444440000", "004444444000", "044444444400", "000111111000", "000133311000", "000133311000", "000111111000", "000000000000", "000000000000", "000000000000"], "PEIXE": ["000000000000", "000005555000", "000055555500", "005555555550", "055500555555", "055555555555", "055500555555", "005555555550", "000055555500", "000005555000", "000000000000", "000000000000"], "FLOR": ["000022000000", "000222200000", "002222220000", "000222200000", "220022002200", "222222222220", "220022002200", "000033000000", "000033000000", "000333300000", "000033000000", "000000000000"], "ESTRELA": ["000006000000", "000066600000", "066666666000", "006666660000", "000666600000", "006666660000", "066660666000", "060600060000", "000000000000", "000000000000", "000000000000", "000000000000"]};
+var CORES={1:"#E03131",2:"#F06595",3:"#2F9E44",4:"#F59F00",5:"#1C7ED6",6:"#FFD43B"};
+var NOMES=Object.keys(P);
+var idx=0,mapa=[],pintado=[],sel=1;
+var g=document.getElementById('grade'),pal=document.getElementById('paleta'),
+    festa=document.getElementById('festa'),aviso=document.getElementById('aviso'),
+    nomeC=document.getElementById('nomeC'),faltaC=document.getElementById('faltaC');
+
+function mostraAviso(t){aviso.textContent=t;aviso.style.display='block';
+  clearTimeout(aviso._t);aviso._t=setTimeout(function(){aviso.style.display='none'},1400);}
+
+function faltam(){var n=0;for(var i=0;i<mapa.length;i++)
+  for(var j=0;j<mapa[i].length;j++){if(mapa[i][j]!=='0'&&!pintado[i][j])n++;}return n;}
+
+function atualiza(){var f=faltam();
+  faltaC.textContent=f>0?('faltam '+f):'pronto!';
+  if(f===0)comemora();}
+
+function comemora(){
+  festa.innerHTML='<div class="tit">\uD83C\uDF89 QUE LINDO!</div>'+
+   '<div class="sub">Você terminou o desenho <b>'+NOMES[idx]+'</b></div>'+
+   '<button id="btOk">'+(idx<NOMES.length-1?'PRÓXIMO DESENHO \u2192':'COMEÇAR DE NOVO')+'</button>';
+  festa.style.display='flex';
+  document.getElementById('btOk').onclick=function(){
+    idx=(idx+1)%NOMES.length;carrega();};
+}
+
+function carrega(){
+  festa.style.display='none';aviso.style.display='none';
+  var nome=NOMES[idx];mapa=P[nome];nomeC.textContent=nome;
+  var n=mapa.length;
+  var lado=Math.min(Math.floor((window.innerHeight-210)/n),Math.floor((window.innerWidth-60)/n),56);
+  lado=Math.max(lado,26);
+  g.style.gridTemplateColumns='repeat('+n+','+lado+'px)';
+  g.innerHTML='';pintado=[];
+  var usadas={};
+  for(var i=0;i<n;i++){
+    pintado.push([]);
+    for(var j=0;j<mapa[i].length;j++){
+      var v=mapa[i][j];pintado[i].push(false);
+      var c=document.createElement('div');
+      c.className='cel'+(v==='0'?' vazio':'');
+      c.style.width=lado+'px';c.style.height=lado+'px';
+      c.style.fontSize=Math.max(11,Math.round(lado*0.42))+'px';
+      if(v!=='0'){c.textContent=v;usadas[v]=true;
+        (function(i,j,v,c){c.addEventListener('click',function(){pinta(i,j,v,c)})})(i,j,v,c);}
+      g.appendChild(c);
+    }
+  }
+  pal.innerHTML='';
+  Object.keys(CORES).forEach(function(k){
+    if(!usadas[k])return;
+    var b=document.createElement('span');
+    b.className='cor'+(k==sel?' sel':'');b.style.background=CORES[k];
+    b.textContent=k;b.onclick=function(){sel=k;
+      [].forEach.call(pal.children,function(x){x.className='cor'});b.className='cor sel';};
+    pal.appendChild(b);
+  });
+  if(!usadas[sel])sel=Object.keys(usadas)[0];
+  [].forEach.call(pal.children,function(x){x.className='cor'+(x.textContent==sel?' sel':'')});
+  atualiza();
+}
+
+function pinta(i,j,v,c){
+  if(pintado[i][j])return;
+  if(String(sel)!==String(v)){mostraAviso('Esse quadradinho é o número '+v+'!');return;}
+  c.style.background=CORES[v];c.classList.add('feito');pintado[i][j]=true;atualiza();
+}
+
+document.getElementById('btProx').onclick=function(){idx=(idx+1)%NOMES.length;carrega();};
+window.addEventListener('resize',function(){var s=JSON.stringify(pintado);carrega();
+  try{var p=JSON.parse(s);for(var i=0;i<p.length;i++)for(var j=0;j<p[i].length;j++)
+    if(p[i][j]){var c=g.children[i*mapa[i].length+j];c.style.background=CORES[mapa[i][j]];
+      c.classList.add('feito');pintado[i][j]=true;}atualiza();}catch(e){}});
+carrega();
+})();
+</script></body></html>
