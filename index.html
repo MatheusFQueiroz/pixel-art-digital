@@ -1,122 +1,373 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2A3081">
 <title>Pixel Art por Números</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='1' width='6' height='6' rx='1' fill='%23E03131'/%3E%3Crect x='9' y='1' width='6' height='6' rx='1' fill='%23FFD43B'/%3E%3Crect x='1' y='9' width='6' height='6' rx='1' fill='%231C7ED6'/%3E%3Crect x='9' y='9' width='6' height='6' rx='1' fill='%232F9E44'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+:root{
+  --azul:#2A3081; --azul2:#4048A8; --azul-escuro:#1F2566;
+  --amarelo:#FFD900; --verde:#2F9E44; --verde-escuro:#1E6B2E;
+  --fundo:#EEF0FA; --papel:#fff; --linha:#D6DAF0; --linha-clara:#E8EAF7;
+  --texto:#2A3081; --cinza:#8E94BD; --numero:#9AA1CC;
+  --sombra:0 10px 30px rgba(42,48,129,.14);
+}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{font-family:"Trebuchet MS",Verdana,sans-serif;color:#2A3081;background:#F4F5FB;
-     display:flex;flex-direction:column}
-header{background:#2A3081;color:#fff;padding:10px 18px;display:flex;align-items:center;
-       gap:14px;flex-wrap:wrap;flex-shrink:0}
-header h1{font-size:20px;white-space:nowrap}
-.chip{font-size:19px;font-weight:bold;border-radius:10px;padding:7px 16px;white-space:nowrap}
-#nomeC{background:#fff;color:#2A3081}
-#faltaC{background:#FFD900;color:#2A3081;margin-left:auto}
-#barra{background:#fff;border-bottom:3px solid #E3E5F2;padding:10px 18px;display:flex;
-       align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0}
-.cor{width:58px;height:58px;border-radius:12px;border:5px solid #fff;cursor:pointer;
-     display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:bold;
-     color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.35)}
-.cor.sel{border-color:#2A3081;transform:scale(1.08)}
-#barra button{font:inherit;font-size:16px;font-weight:bold;padding:9px 16px;border:none;
-              border-radius:10px;background:#4048A8;color:#fff;cursor:pointer;margin-left:auto}
-#palco{position:relative;flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
-#grade{display:grid;gap:2px;background:#C2C7E0;padding:2px;border-radius:6px}
-.cel{background:#fff;display:flex;align-items:center;justify-content:center;
-     font-size:15px;color:#9AA0C4;cursor:pointer;user-select:none}
-.cel.feito{color:transparent}
-.cel.vazio{background:#F7F7FB;cursor:default;color:transparent}
+html,body{height:100%}
+body{
+  font-family:"Fredoka","Trebuchet MS",Verdana,sans-serif;color:var(--texto);
+  background-color:var(--fundo);
+  background-image:linear-gradient(var(--linha-clara) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--linha-clara) 1px,transparent 1px);
+  background-size:28px 28px;
+  display:flex;flex-direction:column;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+button{font:inherit}
+
+/* ---------- Cabeçalho ---------- */
+header{
+  background:linear-gradient(120deg,#2A3081 0%,#4A52C4 100%);color:#fff;
+  padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex-shrink:0;
+  box-shadow:0 4px 18px rgba(42,48,129,.28);position:relative;z-index:2;
+}
+.logo{display:grid;grid-template-columns:repeat(2,15px);gap:3px;flex-shrink:0}
+.logo i{width:15px;height:15px;border-radius:3px;display:block;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18)}
+header h1{font-size:22px;font-weight:700;letter-spacing:.5px;white-space:nowrap;line-height:1.1}
+header h1 small{display:block;font-size:11px;font-weight:500;opacity:.8;letter-spacing:2px}
+.chip{font-size:18px;font-weight:600;border-radius:999px;padding:6px 16px;white-space:nowrap;
+      display:inline-flex;align-items:center;gap:8px}
+#nomeC{background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.55)}
+#progresso{margin-left:auto;display:flex;align-items:center;gap:10px}
+#faltaC{background:var(--amarelo);color:var(--azul);box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.barraP{width:150px;height:14px;background:rgba(255,255,255,.22);border-radius:999px;overflow:hidden;
+        box-shadow:inset 0 2px 4px rgba(0,0,0,.2)}
+.barraP i{display:block;height:100%;width:0;border-radius:999px;transition:width .35s ease;
+          background:linear-gradient(90deg,#FFD900,#FFB800)}
+
+/* ---------- Paleta ---------- */
+#barra{background:var(--papel);border-bottom:3px solid var(--linha);padding:10px 18px;
+       display:flex;align-items:center;gap:12px;flex-wrap:wrap;flex-shrink:0}
+#paleta{display:flex;gap:10px;flex-wrap:wrap}
+.cor{
+  width:58px;height:58px;border-radius:16px;border:4px solid #fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;
+  text-shadow:0 2px 3px rgba(0,0,0,.35);position:relative;user-select:none;
+  box-shadow:0 3px 0 rgba(0,0,0,.18),0 5px 12px rgba(0,0,0,.14);
+  transition:transform .15s,box-shadow .15s,opacity .2s;
+}
+.cor:hover{transform:translateY(-2px)}
+.cor.sel{border-color:var(--azul);transform:scale(1.14);
+         box-shadow:0 0 0 3px #fff,0 0 0 6px var(--azul),0 8px 16px rgba(0,0,0,.22)}
+.cor.ok{opacity:.5}
+.cor.ok::after{
+  content:"\2713";position:absolute;right:-8px;top:-8px;width:26px;height:26px;border-radius:50%;
+  background:var(--verde);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;
+  text-shadow:none;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.2);
+}
+.botoes{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.bt{
+  font-size:16px;font-weight:600;padding:10px 18px;border:none;border-radius:12px;
+  background:var(--azul2);color:#fff;cursor:pointer;box-shadow:0 4px 0 var(--azul-escuro);
+  transition:transform .1s,box-shadow .1s,filter .15s;white-space:nowrap;
+}
+.bt:hover{filter:brightness(1.08)}
+.bt:active{transform:translateY(3px);box-shadow:0 1px 0 var(--azul-escuro)}
+.bt.claro{background:#fff;color:var(--azul);border:2px solid var(--linha);box-shadow:0 4px 0 var(--linha)}
+.bt.claro:active{box-shadow:0 1px 0 var(--linha)}
+.bt.verde{background:var(--verde);box-shadow:0 4px 0 var(--verde-escuro)}
+.bt.verde:active{box-shadow:0 1px 0 var(--verde-escuro)}
+
+/* ---------- Palco / Grade ---------- */
+#palco{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px}
+#folha{background:var(--papel);padding:10px;border-radius:18px;box-shadow:var(--sombra);border:3px solid #fff}
+#grade{display:grid;gap:2px;background:var(--linha);padding:2px;border-radius:8px}
+.cel{
+  background:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;
+  color:var(--numero);cursor:pointer;user-select:none;border-radius:3px;
+  transition:background .15s,color .15s;
+}
+.cel:hover{background:#EEF1FF;color:var(--azul)}
+.cel.feito{color:transparent;animation:pop .3s ease-out}
+.cel.vazio{background:#FAFBFF;cursor:default;color:transparent}
+.cel.vazio:hover{background:#FAFBFF}
+.cel.erro{animation:treme .35s;background:#FFE0E0!important;color:#E03131!important}
+@keyframes pop{0%{transform:scale(.3);border-radius:50%}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes treme{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}
+                 60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+
+/* ---------- Galeria de desenhos ---------- */
+#galeria{background:var(--papel);border-top:3px solid var(--linha);padding:8px 18px;display:flex;gap:8px;
+         justify-content:center;flex-wrap:wrap;flex-shrink:0}
+.mini{
+  display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 10px;border-radius:12px;
+  cursor:pointer;border:3px solid transparent;font-size:13px;font-weight:600;color:var(--cinza);
+  transition:.15s;position:relative;
+}
+.mini:hover{background:#F0F2FF;color:var(--azul)}
+.mini.atual{border-color:var(--azul);color:var(--azul);background:#F0F2FF}
+.mini canvas{width:44px;height:44px;image-rendering:pixelated;border-radius:6px;background:#F4F5FB}
+.mini.completo::after{content:"\2B50";position:absolute;top:-6px;right:-2px;font-size:16px;
+                      filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+
+/* ---------- Aviso ---------- */
+#aviso{
+  position:absolute;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);
+  background:var(--azul);color:#fff;font-size:18px;font-weight:600;padding:12px 22px;border-radius:14px;
+  opacity:0;pointer-events:none;transition:.25s;box-shadow:var(--sombra);white-space:nowrap;max-width:92%;
+  z-index:3;
+}
+#aviso.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- Festa ---------- */
 #festa{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
-       flex-direction:column;gap:18px;background:rgba(255,255,255,.97);text-align:center}
-#festa .tit{font-size:46px;font-weight:bold}
-#festa .sub{font-size:22px;color:#666}
-#festa button{font:inherit;font-size:22px;font-weight:bold;padding:14px 28px;border:none;
-              border-radius:10px;background:#2F9E44;color:#fff;cursor:pointer}
-#aviso{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:#2A3081;
-       color:#fff;font-size:18px;padding:10px 20px;border-radius:12px;display:none}
-</style></head><body>
-<header><h1>PIXEL ART POR NÚMEROS</h1>
-<div class="chip" id="nomeC">—</div><div class="chip" id="faltaC">—</div></header>
-<div id="barra"><span id="paleta"></span>
-<button id="btProx">PRÓXIMO DESENHO &#8594;</button></div>
-<div id="palco"><div id="grade"></div><div id="aviso"></div><div id="festa"></div></div>
+       background:rgba(42,48,129,.55);backdrop-filter:blur(3px);z-index:5;padding:16px}
+#festa.on{display:flex}
+.cartao{
+  background:#fff;border-radius:26px;padding:30px 40px;text-align:center;max-width:100%;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);animation:entra .45s cubic-bezier(.2,.9,.3,1.25);
+}
+.cartao .tit{font-size:42px;font-weight:700;line-height:1.1}
+.cartao .sub{font-size:20px;color:#666;margin:8px 0 18px}
+.cartao canvas{width:160px;height:160px;image-rendering:pixelated;margin:0 auto 20px;display:block;
+               border-radius:12px;background:#F4F5FB;box-shadow:inset 0 0 0 3px var(--linha)}
+.cartao .acoes{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cartao .bt{font-size:20px;padding:14px 26px}
+@keyframes entra{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+#confetes{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:6}
+.confete{position:absolute;top:-24px;width:12px;height:18px;border-radius:3px;
+         animation:cai linear forwards;opacity:.95}
+@keyframes cai{to{transform:translateY(110vh) rotate(720deg)}}
+
+/* ---------- Telas pequenas ---------- */
+@media (max-width:640px){
+  header{padding:8px 12px;gap:10px}
+  header h1{font-size:17px}
+  header h1 small{display:none}
+  .chip{font-size:15px;padding:5px 12px}
+  .barraP{display:none}
+  #barra{padding:8px 12px;gap:8px}
+  .cor{width:46px;height:46px;font-size:21px;border-radius:13px}
+  .bt{font-size:14px;padding:8px 12px}
+  #palco{padding:8px}
+  #folha{padding:6px;border-radius:14px}
+  .mini{padding:4px 6px;font-size:11px}
+  .mini canvas{width:34px;height:34px}
+  .cartao{padding:22px 24px}
+  .cartao .tit{font-size:30px}
+  .cartao .sub{font-size:17px}
+  .cartao canvas{width:120px;height:120px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" aria-hidden="true">
+    <i style="background:#E03131"></i><i style="background:#FFD43B"></i>
+    <i style="background:#1C7ED6"></i><i style="background:#2F9E44"></i>
+  </div>
+  <h1>PIXEL ART <small>POR NÚMEROS</small></h1>
+  <div class="chip" id="nomeC">—</div>
+  <div id="progresso">
+    <div class="barraP" aria-hidden="true"><i id="barraFill"></i></div>
+    <div class="chip" id="faltaC">—</div>
+  </div>
+</header>
+
+<div id="barra">
+  <div id="paleta"></div>
+  <div class="botoes">
+    <button class="bt claro" id="btLimpa">↺ RECOMEÇAR</button>
+    <button class="bt" id="btProx">PRÓXIMO DESENHO →</button>
+  </div>
+</div>
+
+<div id="palco">
+  <div id="folha"><div id="grade"></div></div>
+  <div id="aviso" role="status"></div>
+  <div id="festa"></div>
+  <div id="confetes"></div>
+</div>
+
+<div id="galeria"></div>
+
 <script>
 (function(){
 var P={"CORACAO": ["000000000000", "002200220000", "022220222000", "022222222200", "022222222200", "002222222000", "000222220000", "000022200000", "000002000000", "000000000000", "000000000000", "000000000000"], "CASA": ["000004000000", "000044400000", "000444440000", "004444444000", "044444444400", "000111111000", "000133311000", "000133311000", "000111111000", "000000000000", "000000000000", "000000000000"], "PEIXE": ["000000000000", "000005555000", "000055555500", "005555555550", "055500555555", "055555555555", "055500555555", "005555555550", "000055555500", "000005555000", "000000000000", "000000000000"], "FLOR": ["000022000000", "000222200000", "002222220000", "000222200000", "220022002200", "222222222220", "220022002200", "000033000000", "000033000000", "000333300000", "000033000000", "000000000000"], "ESTRELA": ["000006000000", "000066600000", "066666666000", "006666660000", "000666600000", "006666660000", "066660666000", "060600060000", "000000000000", "000000000000", "000000000000", "000000000000"]};
 var CORES={1:"#E03131",2:"#F06595",3:"#2F9E44",4:"#F59F00",5:"#1C7ED6",6:"#FFD43B"};
+var ROTULOS={CORACAO:"CORAÇÃO",CASA:"CASA",PEIXE:"PEIXE",FLOR:"FLOR",ESTRELA:"ESTRELA"};
 var NOMES=Object.keys(P);
-var idx=0,mapa=[],pintado=[],sel=1;
+
+// Recorta as linhas/colunas totalmente vazias das bordas, mantendo uma margem de 1 célula,
+// para o desenho ficar centralizado e maior na tela.
+function recorta(linhas){
+  var n=linhas.length,m=linhas[0].length,r0=n,r1=-1,c0=m,c1=-1;
+  for(var i=0;i<n;i++)for(var j=0;j<m;j++)if(linhas[i][j]!=='0'){
+    if(i<r0)r0=i;if(i>r1)r1=i;if(j<c0)c0=j;if(j>c1)c1=j;}
+  if(r1<0)return linhas;
+  r0=Math.max(0,r0-1);r1=Math.min(n-1,r1+1);c0=Math.max(0,c0-1);c1=Math.min(m-1,c1+1);
+  var out=[];for(i=r0;i<=r1;i++)out.push(linhas[i].substring(c0,c1+1));return out;
+}
+NOMES.forEach(function(k){P[k]=recorta(P[k]);});
+
+var idx=0,mapa=[],pintado=[],sel=1,completos={};
 var g=document.getElementById('grade'),pal=document.getElementById('paleta'),
+    palco=document.getElementById('palco'),folha=document.getElementById('folha'),
     festa=document.getElementById('festa'),aviso=document.getElementById('aviso'),
-    nomeC=document.getElementById('nomeC'),faltaC=document.getElementById('faltaC');
+    confetes=document.getElementById('confetes'),galeria=document.getElementById('galeria'),
+    nomeC=document.getElementById('nomeC'),faltaC=document.getElementById('faltaC'),
+    barraFill=document.getElementById('barraFill');
 
-function mostraAviso(t){aviso.textContent=t;aviso.style.display='block';
-  clearTimeout(aviso._t);aviso._t=setTimeout(function(){aviso.style.display='none'},1400);}
+function mostraAviso(t){aviso.textContent=t;aviso.classList.add('on');
+  clearTimeout(aviso._t);aviso._t=setTimeout(function(){aviso.classList.remove('on')},1500);}
 
-function faltam(){var n=0;for(var i=0;i<mapa.length;i++)
-  for(var j=0;j<mapa[i].length;j++){if(mapa[i][j]!=='0'&&!pintado[i][j])n++;}return n;}
+function totais(){var tot=0,feito=0;for(var i=0;i<mapa.length;i++)
+  for(var j=0;j<mapa[i].length;j++){if(mapa[i][j]!=='0'){tot++;if(pintado[i][j])feito++;}}
+  return {tot:tot,feito:feito,faltam:tot-feito};}
 
-function atualiza(){var f=faltam();
-  faltaC.textContent=f>0?('faltam '+f):'pronto!';
-  if(f===0)comemora();}
+function corCompleta(k){for(var i=0;i<mapa.length;i++)for(var j=0;j<mapa[i].length;j++)
+  if(mapa[i][j]===String(k)&&!pintado[i][j])return false;return true;}
 
-function comemora(){
-  festa.innerHTML='<div class="tit">\uD83C\uDF89 QUE LINDO!</div>'+
-   '<div class="sub">Você terminou o desenho <b>'+NOMES[idx]+'</b></div>'+
-   '<button id="btOk">'+(idx<NOMES.length-1?'PRÓXIMO DESENHO \u2192':'COMEÇAR DE NOVO')+'</button>';
-  festa.style.display='flex';
-  document.getElementById('btOk').onclick=function(){
-    idx=(idx+1)%NOMES.length;carrega();};
+function desenhaMini(cv,linhas,soPintado){
+  var n=linhas.length,m=linhas[0].length;cv.width=m;cv.height=n;
+  var ctx=cv.getContext('2d');ctx.clearRect(0,0,m,n);
+  for(var i=0;i<n;i++)for(var j=0;j<m;j++){var v=linhas[i][j];
+    if(v==='0'||(soPintado&&!soPintado[i][j]))continue;
+    ctx.fillStyle=CORES[v];ctx.fillRect(j,i,1,1);}
 }
 
-function carrega(){
-  festa.style.display='none';aviso.style.display='none';
-  var nome=NOMES[idx];mapa=P[nome];nomeC.textContent=nome;
-  var n=mapa.length;
-  var lado=Math.min(Math.floor((window.innerHeight-210)/n),Math.floor((window.innerWidth-60)/n),56);
-  lado=Math.max(lado,26);
-  g.style.gridTemplateColumns='repeat('+n+','+lado+'px)';
-  g.innerHTML='';pintado=[];
-  var usadas={};
-  for(var i=0;i<n;i++){
-    pintado.push([]);
-    for(var j=0;j<mapa[i].length;j++){
-      var v=mapa[i][j];pintado[i].push(false);
-      var c=document.createElement('div');
-      c.className='cel'+(v==='0'?' vazio':'');
-      c.style.width=lado+'px';c.style.height=lado+'px';
-      c.style.fontSize=Math.max(11,Math.round(lado*0.42))+'px';
-      if(v!=='0'){c.textContent=v;usadas[v]=true;
-        (function(i,j,v,c){c.addEventListener('click',function(){pinta(i,j,v,c)})})(i,j,v,c);}
-      g.appendChild(c);
+function atualiza(){
+  var t=totais();
+  faltaC.textContent=t.faltam>0?('faltam '+t.faltam):'pronto!';
+  barraFill.style.width=(t.tot?Math.round(100*t.feito/t.tot):0)+'%';
+  [].forEach.call(pal.children,function(b){
+    b.classList.toggle('ok',corCompleta(b.dataset.k));});
+  if(t.faltam===0&&t.tot>0)comemora();
+}
+
+function soltaConfete(){
+  confetes.innerHTML='';
+  var cores=Object.keys(CORES).map(function(k){return CORES[k]});
+  for(var i=0;i<90;i++){var c=document.createElement('i');c.className='confete';
+    c.style.left=Math.random()*100+'%';c.style.background=cores[i%cores.length];
+    c.style.animationDuration=(2.2+Math.random()*1.8)+'s';
+    c.style.animationDelay=(Math.random()*.8)+'s';
+    c.style.transform='rotate('+Math.random()*360+'deg)';
+    c.style.width=(8+Math.random()*8)+'px';c.style.height=(12+Math.random()*10)+'px';
+    confetes.appendChild(c);}
+  clearTimeout(confetes._t);confetes._t=setTimeout(function(){confetes.innerHTML=''},5000);
+}
+
+function comemora(){
+  completos[NOMES[idx]]=true;montaGaleria();aviso.classList.remove('on');clearTimeout(aviso._t);
+  var ultimo=idx===NOMES.length-1;
+  festa.innerHTML='<div class="cartao"><div class="tit">🎉 QUE LINDO!</div>'+
+   '<div class="sub">Você terminou o desenho <b>'+ROTULOS[NOMES[idx]]+'</b></div>'+
+   '<canvas id="miniFesta"></canvas><div class="acoes">'+
+   '<button class="bt claro" id="btDenovo">PINTAR DE NOVO</button>'+
+   '<button class="bt verde" id="btOk">'+(ultimo?'COMEÇAR DE NOVO ↺':'PRÓXIMO DESENHO →')+'</button>'+
+   '</div></div>';
+  desenhaMini(document.getElementById('miniFesta'),mapa);
+  festa.classList.add('on');soltaConfete();
+  document.getElementById('btOk').onclick=function(){idx=(idx+1)%NOMES.length;carrega();};
+  document.getElementById('btDenovo').onclick=function(){carrega();};
+}
+
+function tamanhoCelula(){
+  var n=mapa.length,m=mapa[0].length;
+  var cs=getComputedStyle(folha),extra=parseFloat(cs.paddingLeft)*2+parseFloat(cs.borderLeftWidth)*2+4;
+  var pw=palco.clientWidth-24-extra,ph=palco.clientHeight-24-extra;
+  var lado=Math.min(Math.floor((ph-2*(n-1))/n),Math.floor((pw-2*(m-1))/m),58);
+  return Math.max(lado,20);
+}
+
+function render(){
+  var n=mapa.length,m=mapa[0].length,lado=tamanhoCelula();
+  g.style.gridTemplateColumns='repeat('+m+','+lado+'px)';
+  g.innerHTML='';
+  for(var i=0;i<n;i++)for(var j=0;j<m;j++){
+    var v=mapa[i][j],c=document.createElement('div');
+    c.className='cel'+(v==='0'?' vazio':'');
+    c.style.width=lado+'px';c.style.height=lado+'px';
+    c.style.fontSize=Math.max(11,Math.round(lado*.46))+'px';
+    if(v!=='0'){
+      if(pintado[i][j]){c.style.background=CORES[v];c.classList.add('feito');c.style.animation='none';}
+      c.textContent=v;
+      (function(i,j,v,c){c.addEventListener('click',function(){pinta(i,j,v,c)})})(i,j,v,c);
     }
+    g.appendChild(c);
   }
+}
+
+function montaPaleta(){
+  var usadas={};
+  for(var i=0;i<mapa.length;i++)for(var j=0;j<mapa[i].length;j++)if(mapa[i][j]!=='0')usadas[mapa[i][j]]=true;
+  if(!usadas[sel])sel=Object.keys(usadas)[0];
   pal.innerHTML='';
   Object.keys(CORES).forEach(function(k){
     if(!usadas[k])return;
-    var b=document.createElement('span');
-    b.className='cor'+(k==sel?' sel':'');b.style.background=CORES[k];
-    b.textContent=k;b.onclick=function(){sel=k;
-      [].forEach.call(pal.children,function(x){x.className='cor'});b.className='cor sel';};
+    var b=document.createElement('button');b.type='button';b.dataset.k=k;
+    b.className='cor'+(String(k)===String(sel)?' sel':'');b.style.background=CORES[k];
+    b.textContent=k;b.setAttribute('aria-label','Cor '+k);
+    b.onclick=function(){seleciona(k)};
     pal.appendChild(b);
   });
-  if(!usadas[sel])sel=Object.keys(usadas)[0];
-  [].forEach.call(pal.children,function(x){x.className='cor'+(x.textContent==sel?' sel':'')});
-  atualiza();
+}
+
+function seleciona(k){
+  if(!pal.querySelector('[data-k="'+k+'"]'))return;
+  sel=k;[].forEach.call(pal.children,function(x){x.classList.toggle('sel',x.dataset.k===String(k))});
+}
+
+function montaGaleria(){
+  galeria.innerHTML='';
+  NOMES.forEach(function(nome,i){
+    var d=document.createElement('div');
+    d.className='mini'+(i===idx?' atual':'')+(completos[nome]?' completo':'');
+    var cv=document.createElement('canvas');desenhaMini(cv,P[nome]);
+    var s=document.createElement('span');s.textContent=ROTULOS[nome]||nome;
+    d.appendChild(cv);d.appendChild(s);
+    d.onclick=function(){if(i!==idx){idx=i;carrega();}};
+    galeria.appendChild(d);
+  });
+}
+
+function carrega(){
+  festa.classList.remove('on');festa.innerHTML='';aviso.classList.remove('on');
+  var nome=NOMES[idx];mapa=P[nome];nomeC.textContent=ROTULOS[nome]||nome;
+  pintado=mapa.map(function(l){return l.split('').map(function(){return false})});
+  montaPaleta();montaGaleria();render();atualiza();
 }
 
 function pinta(i,j,v,c){
   if(pintado[i][j])return;
-  if(String(sel)!==String(v)){mostraAviso('Esse quadradinho é o número '+v+'!');return;}
+  if(String(sel)!==String(v)){
+    c.classList.remove('erro');void c.offsetWidth;c.classList.add('erro');
+    setTimeout(function(){c.classList.remove('erro')},400);
+    mostraAviso('Ops! Esse quadradinho é o número '+v+'.');return;
+  }
   c.style.background=CORES[v];c.classList.add('feito');pintado[i][j]=true;atualiza();
 }
 
 document.getElementById('btProx').onclick=function(){idx=(idx+1)%NOMES.length;carrega();};
-window.addEventListener('resize',function(){var s=JSON.stringify(pintado);carrega();
-  try{var p=JSON.parse(s);for(var i=0;i<p.length;i++)for(var j=0;j<p[i].length;j++)
-    if(p[i][j]){var c=g.children[i*mapa[i].length+j];c.style.background=CORES[mapa[i][j]];
-      c.classList.add('feito');pintado[i][j]=true;}atualiza();}catch(e){}});
+document.getElementById('btLimpa').onclick=function(){
+  if(totais().feito===0||confirm('Apagar tudo e recomeçar este desenho?'))carrega();};
+document.addEventListener('keydown',function(e){
+  if(e.key>='1'&&e.key<='9')seleciona(e.key);
+  else if(e.key==='ArrowRight'&&!festa.classList.contains('on')){idx=(idx+1)%NOMES.length;carrega();}
+  else if(e.key==='ArrowLeft'&&!festa.classList.contains('on')){idx=(idx+NOMES.length-1)%NOMES.length;carrega();}
+});
+var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(render,80)});
 carrega();
 })();
-</script></body></html>
+</script>
+</body>
+</html>
