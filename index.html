@@ -12,7 +12,7 @@
 <style>
 :root{
   --azul:#2A3081; --azul2:#4048A8; --azul-escuro:#1F2566;
-  --amarelo:#FFD900; --verde:#2F9E44; --verde-escuro:#1E6B2E;
+  --amarelo:#FFD900; --verde:#2F9E44; --verde-escuro:#1E6B2E; --vermelho:#E03131;
   --fundo:#EEF0FA; --papel:#fff; --linha:#D6DAF0; --linha-clara:#E8EAF7;
   --texto:#2A3081; --cinza:#8E94BD; --numero:#9AA1CC;
   --sombra:0 10px 30px rgba(42,48,129,.14);
@@ -43,6 +43,7 @@ header h1 small{display:block;font-size:11px;font-weight:500;opacity:.8;letter-s
 .chip{font-size:18px;font-weight:600;border-radius:999px;padding:6px 16px;white-space:nowrap;
       display:inline-flex;align-items:center;gap:8px}
 #nomeC{background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.55)}
+#nomeC b{background:var(--amarelo);color:var(--azul);border-radius:999px;padding:1px 10px;font-size:15px}
 #progresso{margin-left:auto;display:flex;align-items:center;gap:10px}
 #faltaC{background:var(--amarelo);color:var(--azul);box-shadow:0 3px 0 rgba(0,0,0,.18)}
 .barraP{width:150px;height:14px;background:rgba(255,255,255,.22);border-radius:999px;overflow:hidden;
@@ -50,10 +51,28 @@ header h1 small{display:block;font-size:11px;font-weight:500;opacity:.8;letter-s
 .barraP i{display:block;height:100%;width:0;border-radius:999px;transition:width .35s ease;
           background:linear-gradient(90deg,#FFD900,#FFB800)}
 
-/* ---------- Paleta ---------- */
-#barra{background:var(--papel);border-bottom:3px solid var(--linha);padding:10px 18px;
-       display:flex;align-items:center;gap:12px;flex-wrap:wrap;flex-shrink:0}
-#paleta{display:flex;gap:10px;flex-wrap:wrap}
+/* ---------- Palco: folha + paleta lado a lado ---------- */
+#palco{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px}
+#area{display:flex;align-items:center;justify-content:center;gap:18px;max-width:100%;max-height:100%}
+#folha{background:var(--papel);padding:10px;border-radius:18px;box-shadow:var(--sombra);border:3px solid #fff}
+#grade{display:grid;gap:2px;background:var(--linha);padding:2px;border-radius:8px}
+.cel{
+  background:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;
+  color:var(--numero);cursor:pointer;user-select:none;border-radius:3px;
+  transition:background .15s,color .15s;
+}
+.cel:hover{background:#EEF1FF;color:var(--azul)}
+.cel.feito{color:transparent;animation:pop .3s ease-out}
+.cel.vazio{background:#FAFBFF;cursor:default;color:transparent}
+.cel.vazio:hover{background:#FAFBFF}
+.cel.erro{animation:treme .4s;background:#FFE0E0!important;color:var(--vermelho)!important;
+          box-shadow:inset 0 0 0 3px var(--vermelho);z-index:1}
+@keyframes pop{0%{transform:scale(.3);border-radius:50%}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes treme{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}
+                 60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+
+#lateral{display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0}
+#paleta{display:flex;flex-direction:column;gap:10px;flex-wrap:wrap;max-height:100%;padding:6px}
 .cor{
   width:58px;height:58px;border-radius:16px;border:4px solid #fff;cursor:pointer;
   display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;
@@ -70,9 +89,10 @@ header h1 small{display:block;font-size:11px;font-weight:500;opacity:.8;letter-s
   background:var(--verde);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;
   text-shadow:none;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.2);
 }
-.botoes{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.cor.dica{animation:pulsa .6s ease-in-out 5}
+@keyframes pulsa{0%,100%{transform:scale(1)}50%{transform:scale(1.25);box-shadow:0 0 0 4px #fff,0 0 0 8px var(--vermelho)}}
 .bt{
-  font-size:16px;font-weight:600;padding:10px 18px;border:none;border-radius:12px;
+  font-size:15px;font-weight:600;padding:9px 16px;border:none;border-radius:12px;
   background:var(--azul2);color:#fff;cursor:pointer;box-shadow:0 4px 0 var(--azul-escuro);
   transition:transform .1s,box-shadow .1s,filter .15s;white-space:nowrap;
 }
@@ -83,46 +103,45 @@ header h1 small{display:block;font-size:11px;font-weight:500;opacity:.8;letter-s
 .bt.verde{background:var(--verde);box-shadow:0 4px 0 var(--verde-escuro)}
 .bt.verde:active{box-shadow:0 1px 0 var(--verde-escuro)}
 
-/* ---------- Palco / Grade ---------- */
-#palco{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px}
-#folha{background:var(--papel);padding:10px;border-radius:18px;box-shadow:var(--sombra);border:3px solid #fff}
-#grade{display:grid;gap:2px;background:var(--linha);padding:2px;border-radius:8px}
-.cel{
-  background:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;
-  color:var(--numero);cursor:pointer;user-select:none;border-radius:3px;
-  transition:background .15s,color .15s;
-}
-.cel:hover{background:#EEF1FF;color:var(--azul)}
-.cel.feito{color:transparent;animation:pop .3s ease-out}
-.cel.vazio{background:#FAFBFF;cursor:default;color:transparent}
-.cel.vazio:hover{background:#FAFBFF}
-.cel.erro{animation:treme .35s;background:#FFE0E0!important;color:#E03131!important}
-@keyframes pop{0%{transform:scale(.3);border-radius:50%}70%{transform:scale(1.15)}100%{transform:scale(1)}}
-@keyframes treme{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}
-                 60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
-
-/* ---------- Galeria de desenhos ---------- */
-#galeria{background:var(--papel);border-top:3px solid var(--linha);padding:8px 18px;display:flex;gap:8px;
-         justify-content:center;flex-wrap:wrap;flex-shrink:0}
+/* ---------- Trilha de níveis ---------- */
+#galeria{background:var(--papel);border-top:3px solid var(--linha);padding:8px 18px;display:flex;gap:6px;
+         align-items:center;justify-content:center;flex-shrink:0;overflow-x:auto;position:relative}
 .mini{
-  display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 10px;border-radius:12px;
-  cursor:pointer;border:3px solid transparent;font-size:13px;font-weight:600;color:var(--cinza);
-  transition:.15s;position:relative;
+  display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 8px;border-radius:12px;
+  cursor:pointer;border:3px solid transparent;font-size:12px;font-weight:600;color:var(--cinza);
+  transition:.15s;position:relative;flex-shrink:0;min-width:64px;
 }
 .mini:hover{background:#F0F2FF;color:var(--azul)}
 .mini.atual{border-color:var(--azul);color:var(--azul);background:#F0F2FF}
-.mini canvas{width:44px;height:44px;image-rendering:pixelated;border-radius:6px;background:#F4F5FB}
-.mini.completo::after{content:"\2B50";position:absolute;top:-6px;right:-2px;font-size:16px;
+.mini .quad{width:44px;height:44px;border-radius:8px;background:#F4F5FB;display:flex;align-items:center;
+            justify-content:center;font-size:22px;color:#fff;overflow:hidden}
+.mini canvas{width:44px;height:44px;image-rendering:pixelated;display:block}
+.mini.completo::after{content:"\2B50";position:absolute;top:-6px;right:0;font-size:16px;
                       filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+.mini.atual .quad{background:linear-gradient(135deg,#FFD900,#FFB800);color:var(--azul)}
+.mini.bloq{cursor:not-allowed;opacity:.6}
+.mini.bloq:hover{background:transparent;color:var(--cinza)}
+.mini.bloq .quad{background:#E3E5F2;color:#B4B9D8;font-size:20px}
+.mini .num{font-size:10px;font-weight:700;letter-spacing:1px;opacity:.8}
+#zerar{position:absolute;right:8px;bottom:4px;font-size:10px;color:#C3C7E0;background:none;border:none;
+       cursor:pointer;text-decoration:underline}
+#zerar:hover{color:var(--azul)}
 
-/* ---------- Aviso ---------- */
+/* ---------- Aviso de erro ---------- */
 #aviso{
-  position:absolute;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);
-  background:var(--azul);color:#fff;font-size:18px;font-weight:600;padding:12px 22px;border-radius:14px;
-  opacity:0;pointer-events:none;transition:.25s;box-shadow:var(--sombra);white-space:nowrap;max-width:92%;
-  z-index:3;
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.8);
+  background:#fff;color:var(--azul);border:4px solid var(--vermelho);
+  font-size:24px;font-weight:600;padding:20px 30px;border-radius:22px;text-align:center;line-height:1.35;
+  opacity:0;pointer-events:none;transition:.25s;box-shadow:0 16px 40px rgba(0,0,0,.28);max-width:92%;z-index:4;
 }
-#aviso.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#aviso.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#aviso .ops{display:block;font-size:30px;color:var(--vermelho);font-weight:700}
+#aviso .n{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:12px;
+          color:#fff;font-size:26px;font-weight:700;text-shadow:0 2px 3px rgba(0,0,0,.35);vertical-align:middle;
+          margin:0 4px;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+#aviso .n.errada{background:#fff;color:var(--vermelho);border-color:var(--vermelho);text-shadow:none;
+                 text-decoration:line-through}
+#aviso.info{border-color:var(--azul);font-size:20px;padding:16px 24px}
 
 /* ---------- Festa ---------- */
 #festa{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
@@ -144,20 +163,30 @@ header h1 small{display:block;font-size:11px;font-weight:500;opacity:.8;letter-s
          animation:cai linear forwards;opacity:.95}
 @keyframes cai{to{transform:translateY(110vh) rotate(720deg)}}
 
-/* ---------- Telas pequenas ---------- */
+/* ---------- Telas estreitas / retrato: paleta embaixo da folha ---------- */
+@media (max-width:640px),(orientation:portrait){
+  #area{flex-direction:column;gap:10px}
+  #lateral{flex-direction:row;flex-wrap:wrap;justify-content:center}
+  #paleta{flex-direction:row;justify-content:center;max-height:none;max-width:100%}
+}
 @media (max-width:640px){
   header{padding:8px 12px;gap:10px}
   header h1{font-size:17px}
   header h1 small{display:none}
   .chip{font-size:15px;padding:5px 12px}
+  #nomeC b{font-size:12px}
   .barraP{display:none}
-  #barra{padding:8px 12px;gap:8px}
   .cor{width:46px;height:46px;font-size:21px;border-radius:13px}
-  .bt{font-size:14px;padding:8px 12px}
+  #paleta{gap:8px;padding:4px}
+  .bt{font-size:13px;padding:8px 12px}
   #palco{padding:8px}
   #folha{padding:6px;border-radius:14px}
-  .mini{padding:4px 6px;font-size:11px}
-  .mini canvas{width:34px;height:34px}
+  #galeria{justify-content:flex-start;padding:6px 10px}
+  .mini{padding:4px 6px;font-size:11px;min-width:54px}
+  .mini .quad,.mini canvas{width:36px;height:36px}
+  #aviso{font-size:19px;padding:14px 18px}
+  #aviso .ops{font-size:24px}
+  #aviso .n{width:38px;height:38px;font-size:21px}
   .cartao{padding:22px 24px}
   .cartao .tit{font-size:30px}
   .cartao .sub{font-size:17px}
@@ -182,16 +211,14 @@ header h1 small{display:block;font-size:11px;font-weight:500;opacity:.8;letter-s
   </div>
 </header>
 
-<div id="barra">
-  <div id="paleta"></div>
-  <div class="botoes">
-    <button class="bt claro" id="btLimpa">↺ RECOMEÇAR</button>
-    <button class="bt" id="btProx">PRÓXIMO DESENHO →</button>
-  </div>
-</div>
-
 <div id="palco">
-  <div id="folha"><div id="grade"></div></div>
+  <div id="area">
+    <div id="folha"><div id="grade"></div></div>
+    <div id="lateral">
+      <div id="paleta"></div>
+      <button class="bt claro" id="btLimpa">↺ RECOMEÇAR</button>
+    </div>
+  </div>
   <div id="aviso" role="status"></div>
   <div id="festa"></div>
   <div id="confetes"></div>
@@ -201,13 +228,16 @@ header h1 small{display:block;font-size:11px;font-weight:500;opacity:.8;letter-s
 
 <script>
 (function(){
-var P={"CORACAO": ["000000000000", "002200220000", "022220222000", "022222222200", "022222222200", "002222222000", "000222220000", "000022200000", "000002000000", "000000000000", "000000000000", "000000000000"], "CASA": ["000004000000", "000044400000", "000444440000", "004444444000", "044444444400", "000111111000", "000133311000", "000133311000", "000111111000", "000000000000", "000000000000", "000000000000"], "PEIXE": ["000000000000", "000005555000", "000055555500", "005555555550", "055500555555", "055555555555", "055500555555", "005555555550", "000055555500", "000005555000", "000000000000", "000000000000"], "FLOR": ["000022000000", "000222200000", "002222220000", "000222200000", "220022002200", "222222222220", "220022002200", "000033000000", "000033000000", "000333300000", "000033000000", "000000000000"], "ESTRELA": ["000006000000", "000066600000", "066666666000", "006666660000", "000666600000", "006666660000", "066660666000", "060600060000", "000000000000", "000000000000", "000000000000", "000000000000"]};
-var CORES={1:"#E03131",2:"#F06595",3:"#2F9E44",4:"#F59F00",5:"#1C7ED6",6:"#FFD43B"};
-var ROTULOS={CORACAO:"CORAÇÃO",CASA:"CASA",PEIXE:"PEIXE",FLOR:"FLOR",ESTRELA:"ESTRELA"};
-var NOMES=Object.keys(P);
+// Desenhos em ordem de dificuldade (do mais fácil para o mais difícil). '0' = vazio.
+var ANTIGOS={"CORACAO": ["000000000000", "002200220000", "022220222000", "022222222200", "022222222200", "002222222000", "000222220000", "000022200000", "000002000000", "000000000000", "000000000000", "000000000000"], "CASA": ["000004000000", "000044400000", "000444440000", "004444444000", "044444444400", "000111111000", "000133311000", "000133311000", "000111111000", "000000000000", "000000000000", "000000000000"], "PEIXE": ["000000000000", "000005555000", "000055555500", "005555555550", "055500555555", "055555555555", "055500555555", "005555555550", "000055555500", "000005555000", "000000000000", "000000000000"], "FLOR": ["000022000000", "000222200000", "002222220000", "000222200000", "220022002200", "222222222220", "220022002200", "000033000000", "000033000000", "000333300000", "000033000000", "000000000000"], "ESTRELA": ["000006000000", "000066600000", "066666666000", "006666660000", "000666600000", "006666660000", "066660666000", "060600060000", "000000000000", "000000000000", "000000000000", "000000000000"]};
+var NOVOS={"SORVETE":["000001100000","000001100000","000022220000","000222222000","002222222200","002222222200","002222222200","000222222000","008888888800","000888888000","000888888000","000088880000","000088880000","000008800000","000008800000"],"PIKACHU":["7700000000000077","0770000000000770","0676000000006760","0066000000006600","0066666666666600","0666666666666660","0667666666667660","0666666666666660","0166666676666610","0166666776666610","0066666666666600","0066666666666600","0006666666666000","0006666666666000","0066660000666600","0066600000066600"],"BARBIE":["0000066666600000","0000666666660000","0006666666666000","0006699999966000","0066999999996600","0066995995996600","0066999999996600","0066999119996600","0066699999966600","0066022222206600","0060022222200600","0000022222200000","0000222222220000","0002222222222000","0022222222222200","0022222222222200"],"PRINCESA":["0000600660060000","0000636666360000","0008888888888000","0088889999888800","0088999999998800","0088995995998800","0088999999998800","0088999119998800","0088899999988800","0888802222088880","0888002222008880","0000022222200000","0000222222220000","0002222222222000","0022222222222200","0222222222222220"],"NEYMAR":["0000000880000000","0000008888000000","0000088888800000","0000088998800000","0000089999800000","0000097997900000","0000099999900000","0000009999000000","0000000990000000","0066666336666600","0366666666666630","0966676677766690","0966676676766690","0066676677766600","0005555555555000","0009999009999000"],"SONIC":["0000055555550000","0005555555555500","0055555555555550","5555555000005550","0555555070705550","5555555070705550","0555555999995550","5555559999997550","0555559999999550","0055559999999550","0000555999995500","0000055555550000","0000559999955000","0000559999955000","0000055000550000","0000111000111000"]};
+var P={};Object.keys(ANTIGOS).forEach(function(k){P[k]=ANTIGOS[k]});Object.keys(NOVOS).forEach(function(k){P[k]=NOVOS[k]});
+var NOMES=["CORACAO","ESTRELA","PEIXE","FLOR","CASA","SORVETE","PIKACHU","NEYMAR","BARBIE","SONIC","PRINCESA"];
+var ROTULOS={CORACAO:"CORAÇÃO",ESTRELA:"ESTRELA",PEIXE:"PEIXE",FLOR:"FLOR",CASA:"CASA",SORVETE:"SORVETE",
+             PIKACHU:"PIKACHU",NEYMAR:"NEYMAR",BARBIE:"BARBIE",SONIC:"SONIC",PRINCESA:"PRINCESA"};
+var CORES={1:"#E03131",2:"#F06595",3:"#2F9E44",4:"#F59F00",5:"#1C7ED6",6:"#FFD43B",7:"#343A40",8:"#8B5A2B",9:"#F9C9A6"};
 
-// Recorta as linhas/colunas totalmente vazias das bordas, mantendo uma margem de 1 célula,
-// para o desenho ficar centralizado e maior na tela.
+// Recorta linhas/colunas totalmente vazias das bordas, mantendo margem de 1 célula.
 function recorta(linhas){
   var n=linhas.length,m=linhas[0].length,r0=n,r1=-1,c0=m,c1=-1;
   for(var i=0;i<n;i++)for(var j=0;j<m;j++)if(linhas[i][j]!=='0'){
@@ -218,16 +248,26 @@ function recorta(linhas){
 }
 NOMES.forEach(function(k){P[k]=recorta(P[k]);});
 
-var idx=0,mapa=[],pintado=[],sel=1,completos={};
+// ---------- Progresso (fica salvo no navegador) ----------
+var CHAVE='pixelart-progresso';
+var prog={nivel:0,completos:{}};
+try{var s=JSON.parse(localStorage.getItem(CHAVE));if(s&&typeof s.nivel==='number'){prog=s;prog.completos=prog.completos||{};}}catch(e){}
+prog.nivel=Math.min(Math.max(0,prog.nivel),NOMES.length-1);
+function salva(){try{localStorage.setItem(CHAVE,JSON.stringify(prog))}catch(e){}}
+
+var idx=prog.nivel,mapa=[],pintado=[],sel=1;
 var g=document.getElementById('grade'),pal=document.getElementById('paleta'),
-    palco=document.getElementById('palco'),folha=document.getElementById('folha'),
+    palco=document.getElementById('palco'),folha=document.getElementById('folha'),lateral=document.getElementById('lateral'),
     festa=document.getElementById('festa'),aviso=document.getElementById('aviso'),
     confetes=document.getElementById('confetes'),galeria=document.getElementById('galeria'),
     nomeC=document.getElementById('nomeC'),faltaC=document.getElementById('faltaC'),
     barraFill=document.getElementById('barraFill');
 
-function mostraAviso(t){aviso.textContent=t;aviso.classList.add('on');
-  clearTimeout(aviso._t);aviso._t=setTimeout(function(){aviso.classList.remove('on')},1500);}
+function escondeAviso(){aviso.classList.remove('on');clearTimeout(aviso._t);}
+function mostraAviso(html,ms,info){
+  aviso.innerHTML=html;aviso.classList.toggle('info',!!info);aviso.classList.add('on');
+  clearTimeout(aviso._t);aviso._t=setTimeout(function(){aviso.classList.remove('on')},ms||3000);
+}
 
 function totais(){var tot=0,feito=0;for(var i=0;i<mapa.length;i++)
   for(var j=0;j<mapa[i].length;j++){if(mapa[i][j]!=='0'){tot++;if(pintado[i][j])feito++;}}
@@ -236,20 +276,19 @@ function totais(){var tot=0,feito=0;for(var i=0;i<mapa.length;i++)
 function corCompleta(k){for(var i=0;i<mapa.length;i++)for(var j=0;j<mapa[i].length;j++)
   if(mapa[i][j]===String(k)&&!pintado[i][j])return false;return true;}
 
-function desenhaMini(cv,linhas,soPintado){
-  var n=linhas.length,m=linhas[0].length;cv.width=m;cv.height=n;
-  var ctx=cv.getContext('2d');ctx.clearRect(0,0,m,n);
-  for(var i=0;i<n;i++)for(var j=0;j<m;j++){var v=linhas[i][j];
-    if(v==='0'||(soPintado&&!soPintado[i][j]))continue;
-    ctx.fillStyle=CORES[v];ctx.fillRect(j,i,1,1);}
+function desenhaMini(cv,linhas){
+  var n=linhas.length,m=linhas[0].length,t=Math.max(n,m);cv.width=t;cv.height=t;
+  var ctx=cv.getContext('2d');ctx.clearRect(0,0,t,t);
+  var ox=Math.floor((t-m)/2),oy=Math.floor((t-n)/2);
+  for(var i=0;i<n;i++)for(var j=0;j<m;j++){var v=linhas[i][j];if(v==='0')continue;
+    ctx.fillStyle=CORES[v];ctx.fillRect(j+ox,i+oy,1,1);}
 }
 
 function atualiza(){
   var t=totais();
   faltaC.textContent=t.faltam>0?('faltam '+t.faltam):'pronto!';
   barraFill.style.width=(t.tot?Math.round(100*t.feito/t.tot):0)+'%';
-  [].forEach.call(pal.children,function(b){
-    b.classList.toggle('ok',corCompleta(b.dataset.k));});
+  [].forEach.call(pal.children,function(b){b.classList.toggle('ok',corCompleta(b.dataset.k));});
   if(t.faltam===0&&t.tot>0)comemora();
 }
 
@@ -267,26 +306,32 @@ function soltaConfete(){
 }
 
 function comemora(){
-  completos[NOMES[idx]]=true;montaGaleria();aviso.classList.remove('on');clearTimeout(aviso._t);
-  var ultimo=idx===NOMES.length-1;
-  festa.innerHTML='<div class="cartao"><div class="tit">🎉 QUE LINDO!</div>'+
-   '<div class="sub">Você terminou o desenho <b>'+ROTULOS[NOMES[idx]]+'</b></div>'+
+  escondeAviso();
+  prog.completos[NOMES[idx]]=true;
+  if(idx+1<NOMES.length&&prog.nivel<idx+1)prog.nivel=idx+1;
+  salva();montaGaleria();
+  var ultimo=idx===NOMES.length-1,tudo=NOMES.every(function(n){return prog.completos[n]});
+  festa.innerHTML='<div class="cartao"><div class="tit">'+(ultimo?'🏆 PARABÉNS!':'🎉 QUE LINDO!')+'</div>'+
+   '<div class="sub">'+(tudo?'Você completou <b>todos os desenhos</b>!':'Você terminou o desenho <b>'+ROTULOS[NOMES[idx]]+'</b>'+
+   (ultimo?'':' e desbloqueou o nível <b>'+(idx+2)+'</b>!'))+'</div>'+
    '<canvas id="miniFesta"></canvas><div class="acoes">'+
    '<button class="bt claro" id="btDenovo">PINTAR DE NOVO</button>'+
-   '<button class="bt verde" id="btOk">'+(ultimo?'COMEÇAR DE NOVO ↺':'PRÓXIMO DESENHO →')+'</button>'+
+   (ultimo?'':'<button class="bt verde" id="btOk">PRÓXIMO DESENHO →</button>')+
    '</div></div>';
   desenhaMini(document.getElementById('miniFesta'),mapa);
   festa.classList.add('on');soltaConfete();
-  document.getElementById('btOk').onclick=function(){idx=(idx+1)%NOMES.length;carrega();};
+  var ok=document.getElementById('btOk');if(ok)ok.onclick=function(){idx=idx+1;carrega();};
   document.getElementById('btDenovo').onclick=function(){carrega();};
 }
 
 function tamanhoCelula(){
   var n=mapa.length,m=mapa[0].length;
   var cs=getComputedStyle(folha),extra=parseFloat(cs.paddingLeft)*2+parseFloat(cs.borderLeftWidth)*2+4;
-  var pw=palco.clientWidth-24-extra,ph=palco.clientHeight-24-extra;
+  var retrato=getComputedStyle(document.getElementById('area')).flexDirection==='column';
+  var pw=palco.clientWidth-24-extra-(retrato?0:lateral.offsetWidth+18);
+  var ph=palco.clientHeight-24-extra-(retrato?lateral.offsetHeight+10:0);
   var lado=Math.min(Math.floor((ph-2*(n-1))/n),Math.floor((pw-2*(m-1))/m),58);
-  return Math.max(lado,20);
+  return Math.max(lado,18);
 }
 
 function render(){
@@ -297,7 +342,7 @@ function render(){
     var v=mapa[i][j],c=document.createElement('div');
     c.className='cel'+(v==='0'?' vazio':'');
     c.style.width=lado+'px';c.style.height=lado+'px';
-    c.style.fontSize=Math.max(11,Math.round(lado*.46))+'px';
+    c.style.fontSize=Math.max(10,Math.round(lado*.46))+'px';
     if(v!=='0'){
       if(pintado[i][j]){c.style.background=CORES[v];c.classList.add('feito');c.style.animation='none';}
       c.textContent=v;
@@ -330,19 +375,35 @@ function seleciona(k){
 function montaGaleria(){
   galeria.innerHTML='';
   NOMES.forEach(function(nome,i){
+    var completo=!!prog.completos[nome],aberto=i<=prog.nivel;
     var d=document.createElement('div');
-    d.className='mini'+(i===idx?' atual':'')+(completos[nome]?' completo':'');
-    var cv=document.createElement('canvas');desenhaMini(cv,P[nome]);
-    var s=document.createElement('span');s.textContent=ROTULOS[nome]||nome;
-    d.appendChild(cv);d.appendChild(s);
-    d.onclick=function(){if(i!==idx){idx=i;carrega();}};
+    d.className='mini'+(i===idx?' atual':'')+(completo?' completo':'')+(aberto?'':' bloq');
+    var q=document.createElement('div');q.className='quad';
+    if(completo){var cv=document.createElement('canvas');desenhaMini(cv,P[nome]);q.appendChild(cv);}
+    else if(aberto){q.textContent='🎨';}
+    else{q.textContent='🔒';}
+    var s=document.createElement('span');s.textContent=aberto?(ROTULOS[nome]||nome):'? ? ?';
+    var num=document.createElement('span');num.className='num';num.textContent='NÍVEL '+(i+1);
+    d.appendChild(q);d.appendChild(num);d.appendChild(s);
+    d.onclick=function(){
+      if(!aberto){mostraAviso('🔒 Termine o desenho <b>'+ROTULOS[NOMES[prog.nivel]]+'</b> para desbloquear o nível '+(i+1)+'!',2500,true);return;}
+      if(i!==idx){idx=i;carrega();}
+    };
     galeria.appendChild(d);
   });
+  var z=document.createElement('button');z.id='zerar';z.type='button';z.textContent='zerar progresso';
+  z.title='Apaga o progresso salvo neste navegador (para o professor)';
+  z.onclick=function(){if(confirm('Zerar todo o progresso e voltar ao nível 1?')){
+    prog={nivel:0,completos:{}};salva();idx=0;carrega();}};
+  galeria.appendChild(z);
+  var atual=galeria.querySelector('.mini.atual');
+  if(atual&&atual.scrollIntoView)try{atual.scrollIntoView({block:'nearest',inline:'center'})}catch(e){}
 }
 
 function carrega(){
-  festa.classList.remove('on');festa.innerHTML='';aviso.classList.remove('on');
-  var nome=NOMES[idx];mapa=P[nome];nomeC.textContent=ROTULOS[nome]||nome;
+  festa.classList.remove('on');festa.innerHTML='';escondeAviso();
+  var nome=NOMES[idx];mapa=P[nome];
+  nomeC.innerHTML='<b>NÍVEL '+(idx+1)+'</b> '+(ROTULOS[nome]||nome);
   pintado=mapa.map(function(l){return l.split('').map(function(){return false})});
   montaPaleta();montaGaleria();render();atualiza();
 }
@@ -351,19 +412,24 @@ function pinta(i,j,v,c){
   if(pintado[i][j])return;
   if(String(sel)!==String(v)){
     c.classList.remove('erro');void c.offsetWidth;c.classList.add('erro');
-    setTimeout(function(){c.classList.remove('erro')},400);
-    mostraAviso('Ops! Esse quadradinho é o número '+v+'.');return;
+    clearTimeout(c._t);c._t=setTimeout(function(){c.classList.remove('erro')},3000);
+    var certa=pal.querySelector('[data-k="'+v+'"]');
+    if(certa){certa.classList.remove('dica');void certa.offsetWidth;certa.classList.add('dica');
+      clearTimeout(certa._t);certa._t=setTimeout(function(){certa.classList.remove('dica')},3000);}
+    mostraAviso('<span class="ops">Ops! Cor errada!</span>'+
+      'Esse quadradinho é o número <span class="n" style="background:'+CORES[v]+'">'+v+'</span><br>'+
+      'e você está com a cor <span class="n errada">'+sel+'</span>. Clique na cor <b>'+v+'</b> na paleta!',3200);
+    return;
   }
   c.style.background=CORES[v];c.classList.add('feito');pintado[i][j]=true;atualiza();
 }
 
-document.getElementById('btProx').onclick=function(){idx=(idx+1)%NOMES.length;carrega();};
 document.getElementById('btLimpa').onclick=function(){
   if(totais().feito===0||confirm('Apagar tudo e recomeçar este desenho?'))carrega();};
 document.addEventListener('keydown',function(e){
   if(e.key>='1'&&e.key<='9')seleciona(e.key);
-  else if(e.key==='ArrowRight'&&!festa.classList.contains('on')){idx=(idx+1)%NOMES.length;carrega();}
-  else if(e.key==='ArrowLeft'&&!festa.classList.contains('on')){idx=(idx+NOMES.length-1)%NOMES.length;carrega();}
+  else if(e.key==='ArrowRight'&&!festa.classList.contains('on')&&idx<prog.nivel){idx++;carrega();}
+  else if(e.key==='ArrowLeft'&&!festa.classList.contains('on')&&idx>0){idx--;carrega();}
 });
 var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(render,80)});
 carrega();
